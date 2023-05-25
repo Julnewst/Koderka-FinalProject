@@ -1,0 +1,41 @@
+---
+layout: layouts/layout.njk
+title: Mapa
+---
+    <h2 class="page__title">Mapa</h2>
+
+<div class="container-map">
+  <div id="mapa"></div>
+</div>
+
+	<script type="text/javascript">
+		var stred = SMap.Coords.fromWGS84(14.41, 50.08);
+		var mapa = new SMap(JAK.gel("mapa"), stred, 7);
+		mapa.addDefaultLayer(SMap.DEF_BASE).enable();
+		mapa.addDefaultControls();
+
+    var layer = new SMap.Layer.Marker();
+    mapa.addLayer(layer);
+    layer.enable();
+
+    {% for pribeh in collections.pribehy %}
+
+    {
+      let souradnice = SMap.Coords.fromWGS84({{pribeh.data.lon}}, {{pribeh.data.lat}});
+      let card = new SMap.Card();
+      card.getHeader().innerHTML = "<strong>{{ pribeh.data.title }}</strong>";
+      card.getBody().innerHTML = '<p>{{ pribeh.data.popis }}</p><p><a href="{{ pribeh.url }}">Článek</a></p>';
+
+      let options = {
+      title: "{{pribeh.data.nazev}}"
+      };
+      let marker = new SMap.Marker(souradnice, "{{ pribeh.data.nazev }}", options);
+      marker.decorate(SMap.Marker.Feature.Card, card);
+      layer.addMarker(marker);
+    }
+
+    {% endfor %}
+
+
+	</script>
+   
